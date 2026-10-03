@@ -168,7 +168,9 @@ static int16_t    speed;                // local variable for speed. -1000 to 10
 #endif
 
 static uint32_t    buzzerTimer_prev = 0;
+#if INACTIVITY_TIMEOUT > 0
 static uint32_t    inactivity_timeout_counter;
+#endif
 static MultipleTap MultipleTapBrake;    // define multiple tap functionality for the Brake pedal
 
 static uint16_t rate = RATE; // Adjustable rate to support multiple drive modes on startup
@@ -597,6 +599,8 @@ int main(void) {
     }
 
 
+    // Zero disables only idle shutdown; other poweroff protections remain active.
+    #if INACTIVITY_TIMEOUT > 0
     inactivity_timeout_counter++;
 
     // ####### INACTIVITY TIMEOUT #######
@@ -617,7 +621,7 @@ int main(void) {
       #endif
       poweroff();
     }
-
+    #endif
 
     // HAL_GPIO_TogglePin(LED_PORT, LED_PIN);                 // This is to measure the main() loop duration with an oscilloscope connected to LED_PIN
     // Update states
